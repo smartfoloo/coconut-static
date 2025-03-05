@@ -1,1002 +1,1714 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coconut</title>
-  <link rel="shortcut icon" href="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/favicon.png" type="image/x-icon">
-  <link rel="manifest" href="manifest.json">
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-  <style>
-    /* Global Styles */
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
-    * {
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
-    }
-
-    :root {
-    --background: #181926;
-    --background2: #24273a;
-    --background3: #363a4f;
-    --background4: #494d64;
-    --theme: rgb(138, 173, 244);
-    --shadow: rgba(138, 173, 244, 0.5);
-    --text: #cad3f5;
-    }
-
-    html, body {
-    height: 100vh;
-    width: 100vw;
-    }
-
-    body {
-    margin: 0px;
-    font-family: 'Inter';
-    background-color: var(--background);
-    color: var(--text);
-    display: flex;
-    }
-
-    a {
-    text-decoration: none !important;
-    }
-
-    h1 {
-    font-size: 45px;
-    font-family: 'Montserrat';
-    }
-
-    h2 {
-    font-size: 24px;
-    font-family: 'Montserrat';
-    }
-
-    a {
-    text-decoration: none;
-    color: var(--text);
-    }
-
-    a:hover {
-    text-decoration: underline;
-    }
-
-    /* Sidebar */
-    .sidebar {
-    width: 20%;
-    background-color: var(--background2);
-    padding: 10px;
-    margin: 10px 0px 10px 10px;
-    border-radius: 10px;
-    height: calc(100% - 100px);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow: auto;
-    }
-
-    .logo {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin: 10px;
-    }
-
-    .logo img {
-    height: 40px;
-    width: 40px;
-    }
-
-    .nav-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    }
-
-    .nav-btns a {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: 250ms;
-    font-weight: 700;
-    }
-
-    .nav-btns a:hover {
-    background-color: var(--background3);
-    }
-
-    /* Content Area */
-    .content {
-    margin: 10px;
-    border-radius: 10px;
-    background: var(--background2);
-    padding: 20px;
-    width: 80%;
-    height: calc(100% - 100px);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow: auto;
-    }
-
-    #search-bar {
-    padding: 11px 10px;
-    font-size: 16px;
-    outline: none;
-    border-radius: 10px;
-    background: var(--background3);
-    color: var(--text);
-    border: none;
-    font-family: 'Inter';
-    width: 100%;
-    }
-
-    ::placeholder {
-    color: var(--shadow);
-    }
-
-    #songs-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    }
-
-    .song-item, .song-item-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    transition: 100ms;
-    border-radius: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    }
-
-    .song-item:hover {
-    background: var(--background3);
-    }
-
-    .song-item-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    }
-
-    .song-item img {
-    width: 40px;
-    height: 40px;
-    border-radius: 5px;
-    }
-
-    .song-item-info {
-    display: flex;
-    flex-direction: column;
-    }
-
-    .song-item ion-icon {
-    font-size: 20px;
-    }
-
-    .song-item button {
-    background: transparent;
-    border: none;
-    color: var(--text);
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 100ms;
-    }
-
-    .song-item button:hover {
-    transform: scale(1.1);
-    }
-
-    /* Pagination */
-    #pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    }
-
-    #pagination button {
-    background: var(--background3);
-    color: var(--text);
-    font-family: 'Montserrat';
-    border: none;
-    margin: 0 5px;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 100ms;
-    }
-
-    #pagination button:hover {
-    background: var(--background4);
-    }
-
-    /* Audio Controls */
-    .audio-controls {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: var(--background);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 80px;
-    padding: 0px 20px;
-    z-index: 9999;
-    }
-
-    .song-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 30vw;
-    }
-
-    .song-info img {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    }
-
-    .song-title-info {
-    display: flex;
-    flex-direction: column;
-    }
-
-    .song-info p {
-    margin: 0;
-    }
-
-    .song-title {
-    font-weight: 700;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    }
-
-    .song-artist {
-    font-size: 12px;
-    color: var(--shadow);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    }
-
-    .middle {
-    display: flex;
-    flex-direction: column;
-    width: 40vw;
-    }
-
-    .right {
-    width: 30vw;
-    text-align: right;
-    }
-
-    .right button {
-    background: transparent;
-    border: none;
-    color: var(--text);
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 100ms;
-    font-size: 20px;
-    }
-
-    .right button:hover {
-    transform: scale(1.1);
-    }
-
-    .controls {
-    display: flex;
-    justify-content: center;
-    }
-
-    .controls button {
-    background: none;
-    border: none;
-    color: var(--shadow);
-    font-size: 18px;
-    margin: 0 10px;
-    cursor: pointer;
-    transition: 100ms;
-    }
-
-    .controls button:hover {
-    color: var(--text);
-    }
-
-    #play-pause {
-    background: var(--text);
-    color: var(--background);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 30px;
-    width: 30px;
-    }
-
-    #play-pause:hover {
-    transform: scale(1.1);
-    }
-
-    .progress-bar {
-    flex-grow: 1;
-    margin: 0 20px;
-    }
-
-    .progress-bar input[type="range"] {
-    width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    background: var(--shadow);
-    border-radius: 2px;
-    outline: none;
-    }
-
-    .audio-controls .progress-bar input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    background-color: var(--theme);
-    border-radius: 50%;
-    }
-
-    /* Liked Songs Page */
-
-    .playlist-info {
-    display: flex;
-    gap: 20px;
-    align-items: end;
-    }
-
-    .playlist-cover {
-    width: 100px;
-    height: 100px;
-    border-radius: 20px;
-    }
-
-    #liked-songs-container, 
-    #offline-songs-container,
-    #uploaded-songs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    }
-
-    /* Upload Songs */
-
-    .upload-song-button {
-    height: 100%;
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    }
-
-    .upload-circle {
-    width: 200px;
-    height: 200px;
-    background: var(--background3);
-    border-radius: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: 100ms;
-    }
-
-    .upload-circle:hover {
-    transform: scale(1.05);
-    }
-
-    .upload-circle ion-icon {
-    font-size: 60px;
-    }
-
-    @media screen and (max-width: 1200px) {
-    .song-title, 
-    .song-artist {
-        max-width: 400px;
-    }
-    }
-
-    @media screen and (max-width: 800px) {
-    .song-title,
-    .song-artist {
-        max-width: 300px;
-    }
-    }
-
-    @media screen and (max-width: 700px) {
-    .song-title,
-    .song-artist {
-        max-width: 200px;
-    }
-    }
-
-    @media screen and (max-width: 600px) {
-    .song-title,
-    .song-artist {
-        max-width: 275px;
-    }
-
-    .right {
-        display: none;
-    }
-
-    .sidebar {
-        display: none;
-    }
-
-    .content {
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coconut</title>
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/favicon.png" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+
+      @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+      * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --background: #181926;
+        --background2: #24273a;
+        --background3: #363a4f;
+        --background4: #494d64;
+        --theme: rgb(138, 173, 244);
+        --shadow: rgba(138, 173, 244, 0.5);
+        --text: #cad3f5;
+      }
+
+      html,
+      body {
+        height: 100vh;
         width: 100vw;
-    }
-    }
+      }
 
-    @media screen and (max-width: 500px) {
-    .song-title,
-    .song-artist {
-        max-width: 175px;
-    }
-    }
+      body {
+        margin: 0px;
+        font-family: 'Inter';
+        background-color: var(--background);
+        color: var(--text);
+        display: flex;
+      }
 
-    @media screen and (max-width: 400px) {
+      a {
+        text-decoration: none !important;
+      }
 
-    .song-title,
-    .song-artist {
-        max-width: 150px;
-    }
-    }
+      h1 {
+        font-size: 45px;
+        font-family: 'Montserrat';
+      }
 
-    @media screen and (max-width: 300px) {
+      h2 {
+        font-size: 24px;
+        font-family: 'Montserrat';
+      }
 
-    .song-title,
-    .song-artist {
-        max-width: 100px;
-    }
-    }
-  </style>
-</head>
-<body>
-  <div class="sidebar">
-    <a href="/" class="logo">
-      <img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/favicon.png" alt="">
-      <h2>Coconut</h2>
-    </a>
-    <div class="nav-btns">
-      <a href="./">
-        <ion-icon name="home-outline"></ion-icon>
-        Home
+      a {
+        text-decoration: none;
+        color: var(--text);
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .sidebar {
+        width: 20%;
+        background-color: var(--background2);
+        padding: 10px;
+        margin: 10px 0px 10px 10px;
+        border-radius: 10px;
+        height: calc(100% - 100px);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow: auto;
+      }
+
+      .logo {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin: 10px;
+      }
+
+      .logo img {
+        height: 40px;
+        width: 40px;
+      }
+
+      .nav-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-btns a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: 250ms;
+        font-weight: 700;
+      }
+
+      .nav-btns a:hover {
+        background-color: var(--background3);
+      }
+
+      .content {
+        margin: 10px;
+        border-radius: 10px;
+        background: var(--background2);
+        padding: 20px;
+        width: 80%;
+        height: calc(100% - 100px);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow: auto;
+      }
+
+      #search-bar {
+        padding: 11px 10px;
+        font-size: 16px;
+        outline: none;
+        border-radius: 10px;
+        background: var(--background3);
+        color: var(--text);
+        border: none;
+        font-family: 'Inter';
+        width: 100%;
+      }
+
+      ::placeholder {
+        color: var(--shadow);
+      }
+
+      #songs-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .song-item,
+      .song-item-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        transition: 100ms;
+        border-radius: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .song-item:hover {
+        background: var(--background3);
+      }
+
+      .song-item-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .song-item img {
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+      }
+
+      .song-item-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .song-item ion-icon {
+        font-size: 20px;
+      }
+
+      .song-item button {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 100ms;
+      }
+
+      .song-item button:hover {
+        transform: scale(1.1);
+      }
+
+      #pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      #pagination button {
+        background: var(--background3);
+        color: var(--text);
+        font-family: 'Montserrat';
+        border: none;
+        margin: 0 5px;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 100ms;
+      }
+
+      #pagination button:hover {
+        background: var(--background4);
+      }
+
+      .audio-controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: var(--background);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+        padding: 0px 20px;
+        z-index: 9999;
+      }
+
+      .song-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 30vw;
+      }
+
+      .song-info img {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+      }
+
+      .song-title-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .song-info p {
+        margin: 0;
+      }
+
+      .song-title {
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+      }
+
+      .song-artist {
+        font-size: 12px;
+        color: var(--shadow);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+      }
+
+      .middle {
+        display: flex;
+        flex-direction: column;
+        width: 40vw;
+      }
+
+      .right {
+        width: 30vw;
+        text-align: right;
+      }
+
+      .right button {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 100ms;
+        font-size: 20px;
+      }
+
+      .right button:hover {
+        transform: scale(1.1);
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+      }
+
+      .controls button {
+        background: none;
+        border: none;
+        color: var(--shadow);
+        font-size: 18px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: 100ms;
+      }
+
+      .controls button:hover {
+        color: var(--text);
+      }
+
+      #play-pause {
+        background: var(--text);
+        color: var(--background);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 30px;
+        width: 30px;
+      }
+
+      #play-pause:hover {
+        transform: scale(1.1);
+      }
+
+      .progress-bar {
+        flex-grow: 1;
+        margin: 0 20px;
+      }
+
+      .progress-bar input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        background: var(--shadow);
+        border-radius: 2px;
+        outline: none;
+      }
+
+      .audio-controls .progress-bar input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background-color: var(--theme);
+        border-radius: 50%;
+      }
+
+      .playlist-info {
+        display: flex;
+        gap: 20px;
+        align-items: end;
+      }
+
+      .playlist-cover {
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+      }
+
+      #liked-songs-container,
+      #offline-songs-container,
+      #uploaded-songs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .upload-song-button {
+        height: 100%;
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .upload-circle {
+        width: 200px;
+        height: 200px;
+        background: var(--background3);
+        border-radius: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 100ms;
+      }
+
+      .upload-circle:hover {
+        transform: scale(1.05);
+      }
+
+      .upload-circle ion-icon {
+        font-size: 60px;
+      }
+
+      @media screen and (max-width: 1200px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 400px;
+        }
+      }
+
+      @media screen and (max-width: 800px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 300px;
+        }
+      }
+
+      @media screen and (max-width: 700px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 200px;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 275px;
+        }
+
+        .right {
+          display: none;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .content {
+          width: 100vw;
+        }
+      }
+
+      @media screen and (max-width: 500px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 175px;
+        }
+      }
+
+      @media screen and (max-width: 400px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 150px;
+        }
+      }
+
+      @media screen and (max-width: 300px) {
+
+        .song-title,
+        .song-artist {
+          max-width: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <a href="/" class="logo">
+        <img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/favicon.png" alt="">
+        <h2>Coconut</h2>
       </a>
-    </div>
-  </div>
-  <div class="content">
-    <h1 id="greeting"></h1>
-    <input type="text" id="search-bar" placeholder="Search for songs..." />
-    <div id="songs-container"></div>
-    <div id="pagination"></div>
-    <img src="" alt="" id="yourImageElementId">
-  </div>
-  <div class="audio-controls" id="audio-controls">
-    <div class="song-info">
-      <img id="song-image" src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/default.png">
-      <div class="song-title-info">
-        <p id="song-title" class="song-title"></p>
-        <p id="song-artist" class="song-artist"></p>
+      <div class="nav-btns">
+        <a href="./">
+          <ion-icon name="home-outline"></ion-icon> Home
+        </a>
       </div>
     </div>
-    <div class="middle">
-      <div class="controls">
-        <button id="prev-song">
-          <ion-icon name="play-skip-back"></ion-icon>
-        </button>
-        <button id="play-pause">
-          <ion-icon name="play"></ion-icon>
-        </button>
-        <button id="next-song">
-          <ion-icon name="play-skip-forward"></ion-icon>
+    <div class="content">
+      <h1 id="greeting"></h1>
+      <input type="text" id="search-bar" placeholder="Search for songs..." />
+      <div id="songs-container"></div>
+      <div id="pagination"></div>
+      <img src="/placeholder.svg" alt="" id="yourImageElementId">
+    </div>
+    <div class="audio-controls" id="audio-controls">
+      <div class="song-info">
+        <img id="song-image" src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/default.png">
+        <div class="song-title-info">
+          <p id="song-title" class="song-title"></p>
+          <p id="song-artist" class="song-artist"></p>
+        </div>
+      </div>
+      <div class="middle">
+        <div class="controls">
+          <button id="prev-song">
+            <ion-icon name="play-skip-back"></ion-icon>
+          </button>
+          <button id="play-pause">
+            <ion-icon name="play"></ion-icon>
+          </button>
+          <button id="next-song">
+            <ion-icon name="play-skip-forward"></ion-icon>
+          </button>
+        </div>
+        <div class="progress-bar">
+          <input type="range" id="progress" value="0" min="0" max="100">
+        </div>
+      </div>
+      <div class="right">
+        <button id="like-button">
+          <ion-icon name="heart-outline"></ion-icon>
         </button>
       </div>
-      <div class="progress-bar">
-        <input type="range" id="progress" value="0" min="0" max="100">
-      </div>
     </div>
-    <div class="right">
-      <button onclick="addToLikedSongs(${start + index})">
-        <ion-icon name="heart-outline"></ion-icon>
-      </button>
-    </div>
-  </div>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          }).catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+        });
+      }
+    </script>
+    <script>
+      const currentHour = new Date().getHours();
+
+      function getGreeting(hour) {
+        if (hour >= 5 && hour < 12) {
+          return "Good morning";
+        } else if (hour >= 12 && hour < 18) {
+          return "Good afternoon";
+        } else {
+          return "Good evening";
+        }
+      }
+      const greetingElement = document.getElementById("greeting");
+      const greeting = getGreeting(currentHour);
+      greetingElement.textContent = greeting
+    </script>
+    <script>
+
+      const songs = [{
+        "title": "luther (with sza)",
+        "id": "luther-(with-sza)",
+        "artist": "Kendrick Lamar, sza"
+      }, {
+        "title": "tv off (feat. lefty gunplay)",
+        "id": "tv-off",
+        "artist": "Kendrick Lamar, Lefty Gunplay"
+      }, {
+        "title": "squabble up",
+        "id": "squabble-up",
+        "artist": "Kendrick Lamar"
+      }, {
+        "title": "GBP (feat. 21 Savage)",
+        "id": "gbp",
+        "artist": "Central Cee, 21 Savage"
+      }, {
+        "title": "APT.",
+        "id": "apt",
+        "artist": "ROSÉ, Bruno Mars"
+      }, {
+        "title": "4X4",
+        "id": "4x4",
+        "artist": "Travis Scott"
+      }, {
+        "title": "Cry For Me",
+        "id": "cry-for-me",
+        "artist": "The Weeknd"
+      }, {
+        "title": "Timeless (with Playboi Carti)",
+        "id": "timeless-(with-playboi-carti)",
+        "artist": "The Weeknd, Playboi Carti"
+      }, {
+        "title": "DtMF",
+        "id": "dtmf",
+        "artist": "Bad Bunny"
+      }, {
+        "title": "FE!N (feat. Playboi Carti)",
+        "id": "fe!n-(feat.-playboi-carti)",
+        "artist": "Travis Scott, Playboi Carti"
+      }, {
+        "title": "BAND4BAND",
+        "id": "band4band",
+        "artist": "Central Cee, Lil Baby"
+      }, {
+        "title": "No Pole",
+        "id": "no-pole",
+        "artist": "Don Toliver"
+      }, {
+        "title": "Not Like Us",
+        "id": "not-like-us",
+        "artist": "Kendrick Lamar"
+      }, {
+        "title": "All The Stars (with SZA)",
+        "id": "all-the-stars",
+        "artist": "Kendrick Lamar, SZA"
+      }, {
+        "title": "Truth In The Lies (feat. Lil Durk)",
+        "id": "truth-in-the-lies",
+        "artist": "Central Cee, Lil Durk"
+      }, {
+        "title": "CRG (feat. Dave)",
+        "id": "crg",
+        "artist": "Central Cee, Dave"
+      }, {
+        "title": "Sprinter",
+        "id": "sprinter",
+        "artist": "Dave, Central Cee"
+      }, {
+        "title": "Die With A Smile",
+        "id": "die-with-a-smile",
+        "artist": "Lady Gaga, Bruno Mars"
+      }, {
+        "title": "Dancing In The Flames",
+        "id": "dancing-in-the-flames",
+        "artist": "The Weeknd"
+      }, {
+        "title": "Outta Time",
+        "id": "outta-time",
+        "artist": "Killbunk, Dustystaytrue"
+      }, {
+        "title": "Lucid Dreams",
+        "id": "lucid-dreams",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "All Girls Are The Same",
+        "id": "all-girls-are-the-same",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "Robbery",
+        "id": "robbery",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "Empty Out Your Pockets",
+        "id": "empty-out-your-pockets",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "Wishing Well",
+        "id": "wishing-well",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "Empty",
+        "id": "empty",
+        "artist": "Juice WRLD"
+      }, {
+        "title": "The Box",
+        "id": "the-box",
+        "artist": "Roddy Ricch"
+      }, {
+        "title": "STAY (with Justin Bieber)",
+        "id": "stay-(with-justin-bieber)",
+        "artist": "The Kid LAROI, Justin Bieber"
+      }, {
+        "title": "Hope",
+        "id": "hope",
+        "artist": "XXXTENTACION"
+      }, {
+        "title": "Sad",
+        "id": "sad",
+        "artist": "XXXTENTACION"
+      }, {
+        "title": "TOO MUCH",
+        "id": "too-much",
+        "artist": "The Kid LAROI"
+      }, {
+        "title": "SELFISH",
+        "id": "selfish",
+        "artist": "The Kid LAROI"
+      }, {
+        "title": "HUMBLE.",
+        "id": "humble",
+        "artist": "Kendrick Lamar"
+      }, {
+        "title": "I Had Some Help (feat. Morgan Wallen)",
+        "id": "i-had-some-help-(feat.-morgan-wallen)",
+        "artist": "Post Malone, Morgan Wallen"
+      }, {
+        "title": "Love Somebody",
+        "id": "love-somebody",
+        "artist": "Morgan Wallen"
+      }, {
+        "title": "A Bar Song (Tipsy)",
+        "id": "a-bar-song-(tipsy)",
+        "artist": "Shaboozey"
+      }, {
+        "title": "Sailor Song",
+        "id": "sailor-song",
+        "artist": "Gigi Perez"
+      }, {
+        "title": "Bling-Bang-Bang-Born",
+        "id": "bling-bang-bang-born",
+        "artist": "Creepy Nuts"
+      }, {
+        "title": "Magnetic",
+        "id": "magnetic",
+        "artist": "ILLIT"
+      }, {
+        "title": "Blueberry Faygo",
+        "id": "blueberry-faygo",
+        "artist": "Lil Mosey"
+      }, {
+        "title": "Sunflower - Spider-Man: Into the Spider-Verse",
+        "id": "sunflower",
+        "artist": "Post Malone, Swae Lee"
+      }, {
+        "title": "MILLION DOLLAR BABY",
+        "id": "million-dollar-baby",
+        "artist": "Tommy Richman"
+      }, {
+        "title": "DEVIL IS A LIE",
+        "id": "devil-is-a-lie",
+        "artist": "Tommy Richman"
+      }, {
+        "title": "Overseas",
+        "id": "overseas",
+        "artist": "D-Block Europe, Central Cee"
+      }, {
+        "title": "Loading",
+        "id": "loading",
+        "artist": "Central Cee"
+      }, {
+        "title": "Big Dawgs",
+        "id": "big-dawgs",
+        "artist": "Hanumankind, Halmi"
+      }, {
+        "title": "Beautiful Things",
+        "id": "beautiful-things",
+        "artist": "Benson Boone"
+      }, {
+        "title": "BIRDS OF A FEATHER",
+        "id": "birds-of-a-feather",
+        "artist": "Billie Eilish"
+      }, {
+        "title": "TELESCOPE",
+        "id": "telescope",
+        "artist": "TWXN, LL Clawz, 507KAZ"
+      }, {
+        "title": "soak city (do it)",
+        "id": "soak-city-(do-it)",
+        "artist": "310babii"
+      }, {
+        "title": "PUFFIN ON ZOOTIEZ",
+        "id": "puffin-on-zootiez",
+        "artist": "Future"
+      }, {
+        "title": "CARNIVAL (feat. Rich The Kid, Playboi Carti)",
+        "id": "carnival-(feat.-rich-the-kid,-playboi-carti)",
+        "artist": "¥$, Kanye West, Ty Dolla $ign, Rich The Kid, Playboi Carti"
+      }, {
+        "title": "As It Was",
+        "id": "as-it-was",
+        "artist": "Harry Styles"
+      }, {
+        "title": "Sign of the Times",
+        "id": "sign-of-the-times",
+        "artist": "Harry Styles"
+      }, {
+        "title": "Someone You Loved",
+        "id": "someone-you-loved",
+        "artist": "Lewis Capaldi"
+      }, {
+        "title": "Blinding Lights",
+        "id": "blinding-lights",
+        "artist": "The Weeknd"
+      }, {
+        "title": "Save Your Tears",
+        "id": "save-your-tears",
+        "artist": "The Weeknd"
+      }, {
+        "title": "Die For You",
+        "id": "die-for-you",
+        "artist": "The Weeknd"
+      }, {
+        "title": "Shape of You",
+        "id": "shape-of-you",
+        "artist": "Ed Sheeran"
+      }, {
+        "title": "Perfect",
+        "id": "perfect",
+        "artist": "Ed Sheeran"
+      }, {
+        "title": "Bad Habits",
+        "id": "bad-habits",
+        "artist": "Ed Sheeran"
+      }, {
+        "title": "rockstar (feat. 21 Savage)",
+        "id": "rockstar",
+        "artist": "Post Malone, 21 Savage"
+      }, {
+        "title": "Mamushi (feat. Yuki Chiba)",
+        "id": "mamushi-(feat.-yuki-chiba)",
+        "artist": "Megan Thee Stallion, Yuki Chiba"
+      }, {
+        "title": "We Still Don't Trust You",
+        "id": "we-still-dont-trust-you",
+        "artist": "Future, Metro Boomin, The Weeknd"
+      }, {
+        "title": "Never Change",
+        "id": "never-change",
+        "artist": "Dustystaytrue"
+      }, {
+        "title": "If We Being Rëal",
+        "id": "if-we-being-rëal",
+        "artist": "Yeat"
+      }, {
+        "title": "Popular (with Playboi Carti & Madonna)",
+        "id": "popular-(with-playboi-carti-&-madonna)",
+        "artist": "The Weeknd, Playboi Carti, Madonna"
+      }, {
+        "title": "One Of The Girls (with JENNIE, Lily Rose Depp)",
+        "id": "one-of-the-girls",
+        "artist": "The Weeknd, JENNIE, Lily-Rose Depp"
+      }, {
+        "title": "Power is Power (feat. The Weeknd & Travis Scott)",
+        "id": "power-is-power",
+        "artist": "SZA, The Weeknd, Travis Scott, Game of Thrones"
+      }, {
+        "title": "FIELD TRIP",
+        "id": "field-trip",
+        "artist": "¥$, Playboi Carti, Don Toliver, Kodak Black"
+      }, {
+        "title": "Type Shit",
+        "id": "type-shit",
+        "artist": "Future, Metro Boomin, Travis Scott, Playboi Carti"
+      }, {
+        "title": "Strawberries & Cigarettes",
+        "id": "strawberries-&-cigarettes",
+        "artist": "Troye Sivan"
+      }, {
+        "title": "Little Dark Age",
+        "id": "little-dark-age",
+        "artist": "MGMT"
+      }, {
+        "title": "Chemical",
+        "id": "chemical",
+        "artist": "Post Malone"
+      }, {
+        "title": "Here's Your Perfect",
+        "id": "heres-your-perfect",
+        "artist": "Jamie Miller"
+      }, {
+        "title": "It Is What It Is",
+        "id": "it-is-what-it-is",
+        "artist": "Jamie Miller"
+      }, {
+        "title": "Ransom",
+        "id": "ransom",
+        "artist": "Lil Tecca"
+      }, {
+        "title": "Double Life",
+        "id": "double-life",
+        "artist": "Pharell Williams"
+      }, {
+        "title": "Brother",
+        "id": "brother",
+        "artist": "Kodaline"
+      }, {
+        "title": "Too Sweet",
+        "id": "too-sweet",
+        "artist": "Hozier"
+      }, {
+        "title": "WALK UP",
+        "id": "walk-up",
+        "artist": "Mills"
+      }, {
+        "title": "Like I Do",
+        "id": "like-i-do",
+        "artist": "J. Tajor"
+      }, {
+        "title": "In My Head",
+        "id": "in-my-head",
+        "artist": "Lil Tjay"
+      }, {
+        "title": "bounce (i just wanna dance)",
+        "id": "bounce-(i-just-wanna-dance)",
+        "artist": "фрози, joyful"
+      }, {
+        "title": "kompa pasión",
+        "id": "kompa-pasión",
+        "artist": "фрози, joyful"
+      }, {
+        "title": "Thick Of It (feat. Trippie Redd)",
+        "id": "thick-of-it-(feat.-trippie-redd)",
+        "artist": "KSI, Trippie Redd"
+      }, {
+        "title": "Low",
+        "id": "low",
+        "artist": "KSI"
+      }, {
+        "title": "Brave",
+        "id": "brave",
+        "artist": "こーじゅん"
+      }, {
+        "title": "Burning Down",
+        "id": "burning-down",
+        "artist": "Alex Warren"
+      }, {
+        "title": "End of Beginning",
+        "id": "end-of-beginning",
+        "artist": "Djo"
+      }, {
+        "title": "drunk text",
+        "id": "drunk-text",
+        "artist": "Henry Moodie"
+      }, {
+        "title": "pick up the phone",
+        "id": "pick-up-the-phone",
+        "artist": "Henry Moodie"
+      }, {
+        "title": "Espresso",
+        "id": "espresso",
+        "artist": "Sabrina Carpenter"
+      }, {
+        "title": "Please Please Please",
+        "id": "please-please-please",
+        "artist": "Sabrina Carpenter"
+      }, {
+        "title": "Love You Better",
+        "id": "love-you-better",
+        "artist": "Tiagz"
+      }, {
+        "title": "Mockingbird",
+        "id": "mockingbird",
+        "artist": "Eminem"
+      }, {
+        "title": "Pedro",
+        "id": "pedro",
+        "artist": "Agatino Romero, Jaxomy, Raffaella Carrà"
+      }, {
+        "title": "Past Lives",
+        "id": "past-lives",
+        "artist": "Slushii, sapientdream"
+      }, {
+        "title": "Sunroof",
+        "id": "sunroof",
+        "artist": "Nicky Youre, dazy"
+      }, {
+        "title": "Eyes On You",
+        "id": "eyes-on-you",
+        "artist": "Nicky Youre"
+      }, {
+        "title": "Sea of Thieves",
+        "id": "sea-of-thieves",
+        "artist": "snackrunner"
+      }, {
+        "title": "Bohemian Rhapsody",
+        "id": "bohemian-rhapsody",
+        "artist": "Queen"
+      }, {
+        "title": "Let It Be - Remastered 2009",
+        "id": "let-it-be",
+        "artist": "The Beatles"
+      }, {
+        "title": "Take on Me",
+        "id": "take-on-me",
+        "artist": "a-ha"
+      }, {
+        "title": "Separate Ways (Worlds Apart)[2023 Remaster]",
+        "id": "separate-ways",
+        "artist": "Journey"
+      }, {
+        "title": "Don't Stop Believin' (2022 Remaster)",
+        "id": "dont-stop-believin",
+        "artist": "Journey"
+      }, {
+        "title": "Everlasting Love",
+        "id": "everlasting-love",
+        "artist": "Howard Jones"
+      }, {
+        "title": "Every Breath You Take",
+        "id": "every-breath-you-take",
+        "artist": "The Police"
+      }, {
+        "title": "I'm Still Standing",
+        "id": "im-still-standing",
+        "artist": "Elton John"
+      }, {
+        "title": "Private Eyes",
+        "id": "private-eyes",
+        "artist": "Daryl Hall & John Oates"
+      }, {
+        "title": "Kyrie",
+        "id": "kyrie",
+        "artist": "Mr.Mister"
+      }, {
+        "title": "Runaway",
+        "id": "runaway",
+        "artist": "Bon Jovi"
+      }, {
+        "title": "We Didn't Start the Fire",
+        "id": "we-didnt-start-the-fire",
+        "artist": "Billy Joel"
+      }, {
+        "title": "Piano Man",
+        "id": "piano-man",
+        "artist": "Billy Joel"
+      }, {
+        "title": "Forever Young",
+        "id": "forever-young",
+        "artist": "Alphaville"
+      }, {
+        "title": "Eye in the Sky",
+        "id": "eye-in-the-sky",
+        "artist": "The Alan Parsons Project"
+      }, {
+        "title": "GLORY",
+        "id": "glory",
+        "artist": "Ogryzek"
+      }, {
+        "title": "METAMORPHOSIS",
+        "id": "metamorphosis",
+        "artist": "INTERWORLD"
+      }, {
+        "title": "ライラック",
+        "id": "ライラック",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "青と夏",
+        "id": "青と夏",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "ダーリン",
+        "id": "ダーリン",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "familie",
+        "id": "familie",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "幾億光年",
+        "id": "幾億光年",
+        "artist": "Omoinotake"
+      }, {
+        "title": "Azalea",
+        "id": "azalea",
+        "artist": "Kenshi Yonezu"
+      }, {
+        "title": "hanataba",
+        "id": "hanataba",
+        "artist": "milet"
+      }, {
+        "title": "絆ノ奇跡",
+        "id": "絆ノ奇跡",
+        "artist": "MAN WITH A MISSION, milet"
+      }, {
+        "title": "怪獣の花唄",
+        "id": "怪獣の花唄",
+        "artist": "Vaundy"
+      }, {
+        "title": "odoriko",
+        "id": "odoriko",
+        "artist": "Vaundy"
+      }, {
+        "title": "odoriko dazbee cover",
+        "id": "odoriko-dazbee-cover",
+        "artist": "DAZBEE, Vaundy"
+      }, {
+        "title": "Subtitle",
+        "id": "subtitle",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "Pretender",
+        "id": "pretender",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "I Love",
+        "id": "i-love",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "パラボラ",
+        "id": "パラボラ",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "縫い目",
+        "id": "縫い目",
+        "artist": "上野大樹"
+      }, {
+        "title": "満ちてゆく",
+        "id": "満ちてゆく",
+        "artist": "Fujii Kaze"
+      }, {
+        "title": "白日",
+        "id": "白日",
+        "artist": "King Gnu"
+      }, {
+        "title": "ねっこ",
+        "id": "ねっこ",
+        "artist": "King Gnu"
+      }, {
+        "title": "水平線",
+        "id": "水平線",
+        "artist": "back number"
+      }, {
+        "title": "どうして",
+        "id": "どうして",
+        "artist": "TakaseToya, emi noda"
+      }, {
+        "title": "青のすみか",
+        "id": "青のすみか",
+        "artist": "Tatsuya Kitani"
+      }, {
+        "title": "サザンカ",
+        "id": "サザンカ",
+        "artist": "SEKAI NO OWARI"
+      }, {
+        "title": "ジターバグ",
+        "id": "ジターバグ",
+        "artist": "ELLEGARDEN"
+      }, {
+        "title": "風の日",
+        "id": "風の日",
+        "artist": "ELLEGARDEN"
+      }, {
+        "title": "Sparkle",
+        "id": "sparkle",
+        "artist": "RADWIMPS"
+      }, {
+        "title": "Zenzenzense",
+        "id": "zenzenzense",
+        "artist": "RADWIMPS"
+      }, {
+        "title": "怪物",
+        "id": "怪物",
+        "artist": "YOASOBI"
+      }, {
+        "title": "ハルジオン",
+        "id": "ハルジオン",
+        "artist": "YOASOBI"
+      }, {
+        "title": "ハルカ",
+        "id": "ハルカ",
+        "artist": "YOASOBI"
+      }, {
+        "title": "優しい彗星",
+        "id": "優しい彗星",
+        "artist": "YOASOBI"
+      }, {
+        "title": "あの夢をなぞって",
+        "id": "あの夢をなぞって",
+        "artist": "YOASOBI"
+      }, {
+        "title": "夜に駆ける",
+        "id": "夜に駆ける",
+        "artist": "YOASOBI"
+      }, {
+        "title": "アンコール",
+        "id": "アンコール",
+        "artist": "YOASOBI"
+      }, {
+        "title": "三原色",
+        "id": "三原色",
+        "artist": "YOASOBI"
+      }, {
+        "title": "勇者",
+        "id": "勇者",
+        "artist": "YOASOBI"
+      }, {
+        "title": "もしも命が描けたら",
+        "id": "もしも命が描けたら",
+        "artist": "YOASOBI"
+      }, {
+        "title": "Override",
+        "id": "override",
+        "artist": "Yoshida Yasei"
+      }, {
+        "title": "Hello",
+        "id": "hello",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "Universe",
+        "id": "universe",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "Same Blue",
+        "id": "same-blue",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "Sharon",
+        "id": "sharon",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "Tattoo",
+        "id": "tattoo",
+        "artist": "OFFICIAL HIGE DANDISM"
+      }, {
+        "title": "打上花火",
+        "id": "打上花火",
+        "artist": "Daoko, Kenshi Yonezu"
+      }, {
+        "title": "名前は片想い",
+        "id": "名前は片想い",
+        "artist": "Indigo la End"
+      }, {
+        "title": "Kaikai Kitan",
+        "id": "kaikai-kitan",
+        "artist": "Eve"
+      }, {
+        "title": "Dramaturgy",
+        "id": "dramaturgy",
+        "artist": "Eve"
+      }, {
+        "title": "Teenage Blue",
+        "id": "teenage-blue",
+        "artist": "Eve"
+      }, {
+        "title": "インフェルノ",
+        "id": "インフェルノ",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "ダンスホール",
+        "id": "ダンスホール",
+        "artist": "Mrs. GREEN APPLE"
+      }, {
+        "title": "恋風邪にのせて",
+        "id": "恋風邪にのせて",
+        "artist": "Vaundy"
+      }, {
+        "title": "エメラルド",
+        "id": "エメラルド",
+        "artist": "back number"
+      }, {
+        "title": "Sleepwalk",
+        "id": "sleepwalk",
+        "artist": "natori"
+      }, {
+        "title": "Overdose",
+        "id": "overdose",
+        "artist": "natori"
+      }, {
+        "title": "エウレカ",
+        "id": "エウレカ",
+        "artist": "natori"
+      }, {
+        "title": "フライデー・ナイト",
+        "id": "フライデー・ナイト",
+        "artist": "natori"
+      }, {
+        "title": "ブルーベリー・ナイツ",
+        "id": "ブルーベリー・ナイツ",
+        "artist": "Macaroni Empitsu"
+      }, {
+        "title": "まちがいさがし",
+        "id": "まちがいさがし",
+        "artist": "Suda Masaki"
+      }, {
+        "title": "ラストシーン",
+        "id": "ラストシーン",
+        "artist": "Suda Masaki"
+      }, {
+        "title": "rendez vous",
+        "id": "rendez-vous",
+        "artist": "shytaupe"
+      }, {
+        "title": "キセキ",
+        "id": "キセキ",
+        "artist": "GReeeen"
+      }, {
+        "title": "pride",
+        "id": "pride",
+        "artist": "GReeeen"
+      }, {
+        "title": "愛し君へ",
+        "id": "愛し君へ",
+        "artist": "GReeeen"
+      }, {
+        "title": "Tomorrow never knows",
+        "id": "tomorrow-never-knows",
+        "artist": "Mr.Children"
+      }, {
+        "title": "I Will Be There With You",
+        "id": "i-will-be-there-with-you",
+        "artist": "Various Artists"
+      }, {
+        "title": "Another Sky",
+        "id": "another-sky",
+        "artist": "Taro Hakase"
+      }];
+      let likedSongs = [];
+      const defaultImage = 'https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/default.png';
+      let currentSongIndex = -1;
+      let isPlaying = false;
+      let isPlayingLikedSongs = false;
+      const songImage = document.getElementById('song-image');
+      const songTitle = document.getElementById('song-title');
+      const songArtist = document.getElementById('song-artist');
+      const playPauseButton = document.getElementById('play-pause');
+      const audio = new Audio();
+      const progress = document.getElementById('progress');
+      const likeButton = document.getElementById('like-button');
+      const CACHE_NAME = 'coconut-cache';
+
+      function loadSongs(songsToLoad = songs, page = 1, limit = 30) {
+        const songsContainer = document.getElementById('songs-container');
+        songsContainer.innerHTML = '';
+        const start = (page - 1) * limit;
+        const paginatedSongs = songsToLoad.slice(start, start + limit);
+        likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+        paginatedSongs.forEach((song, index) => {
+          const isLiked = likedSongs.some(likedSong => likedSong.id === song.id);
+          const likeIcon = isLiked ? 'heart' : 'heart-outline';
+          const likeColor = isLiked ? '#ed8796' : 'var(--text)';
+          const songItem = document.createElement('div');
+          songItem.className = 'song-item';
+          songItem.id = song.id;
+          const downloadButtonId = `download-button-${song.id}`;
+          songItem.innerHTML = `
+
+											<div class="song-item-left">
+												<button onclick="playSong('${song.id}', false)">
+													<ion-icon name="play"></ion-icon>
+												</button>
+												<img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
+													<div class="song-item-info">
+														<p class="song-title">${song.title}</p>
+														<p class="song-artist">${song.artist}</p>
+													</div>
+												</div>
+												<div class="song-item-right">
+													<button id="${downloadButtonId}" onclick="downloadSong('${song.id}')">
+														<ion-icon name="arrow-down-circle-outline"></ion-icon>
+													</button>
+													<button id="like-button-${start + index}" onclick="addToLikedSongs(${start + index})">
+														<ion-icon name="${likeIcon}" style="color: ${likeColor}"></ion-icon>
+													</button>
+												</div>
+        `;
+          songsContainer.appendChild(songItem);
+          updateDownloadButton(song.id);
+        });
+      }
+
+      function updateDownloadButton(songId) {
+        const downloadButton = document.getElementById(`download-button-${songId}`);
+        caches.open(CACHE_NAME).then(cache => {
+          cache.match(`https:
+            if (response) {
+              downloadButton.innerHTML = ' < ion - icon name = "checkmark-circle-outline" > < /ion-icon>';
+            }
+          });
+        });
+      }
+
+      function downloadSong(songId) {
+        const audioUrl = `https:
+        const imageUrl = `https:
+        console.log(`Fetching audio from: ${audioUrl}`);
+        console.log(`Fetching image from: ${imageUrl}`);
+        Promise.all([
+          fetch(audioUrl),
+          fetch(imageUrl)
+        ]).then(responses => {
+          const [audioResponse, imageResponse] = responses;
+          const cachePromises = [];
+          if (audioResponse.ok) {
+            const audioCachePromise = caches.open(CACHE_NAME).then(cache => {
+              return cache.put(audioUrl, audioResponse.clone());
+            });
+            cachePromises.push(audioCachePromise);
+          } else {
+            console.error(`Failed to download audio: ${audioResponse.status}`);
+          }
+          if (imageResponse.ok) {
+            const imageCachePromise = caches.open(CACHE_NAME).then(cache => {
+              return cache.put(imageUrl, imageResponse.clone());
+            });
+            cachePromises.push(imageCachePromise);
+          } else {
+            console.error(`Failed to download image: ${imageResponse.status}`);
+          }
+          return Promise.all(cachePromises);
+        }).then(() => {
+          updateDownloadButton(songId);
         }).catch(error => {
-          console.error('Service Worker registration failed:', error);
+          console.error('Error during downloading:', error);
         });
-      });
-    }
-  </script>
-  <script>
-    const currentHour = new Date().getHours();
+      }
 
-    function getGreeting(hour) {
-    if (hour >= 5 && hour < 12) {
-        return "Good morning";
-    } else if (hour >= 12 && hour < 18) {
-        return "Good afternoon";
-    } else {
-        return "Good evening";
-    }
-    }
-
-    const greetingElement = document.getElementById("greeting");
-    const greeting = getGreeting(currentHour);
-    greetingElement.textContent = greeting
-  </script>
-  <script>
-    let songs = [];
-    let likedSongs = [];
-    const defaultImage = 'https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/default.png';
-    let currentSongIndex = -1;
-    let isPlaying = false;
-    let isPlayingLikedSongs = false;
-
-    const songImage = document.getElementById('song-image');
-    const songTitle = document.getElementById('song-title');
-    const songArtist = document.getElementById('song-artist');
-    const playPauseButton = document.getElementById('play-pause');
-    const audio = new Audio();
-    const progress = document.getElementById('progress');
-
-    const CACHE_NAME = 'coconut-cache';
-
-    async function fetchSongs() {
-    const response = await fetch('/songs.json');
-    songs = await response.json();
-    loadSongs();
-    setupPagination();
-    loadLikedSongs();
-    loadOfflineSongs();
-    }
-
-    function loadSongs(songsToLoad = songs, page = 1, limit = 30) {
-    const songsContainer = document.getElementById('songs-container');
-    songsContainer.innerHTML = '';
-
-    const start = (page - 1) * limit;
-    const paginatedSongs = songsToLoad.slice(start, start + limit);
-    likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
-
-    paginatedSongs.forEach((song, index) => {
-        const isLiked = likedSongs.some(likedSong => likedSong.id === song.id);
-        const likeIcon = isLiked ? 'heart' : 'heart-outline';
-        const likeColor = isLiked ? '#ed8796' : 'var(--text)';
-
-        const songItem = document.createElement('div');
-        songItem.className = 'song-item';
-        songItem.id = song.id;
-
-        const downloadButtonId = `download-button-${song.id}`;
-
-        songItem.innerHTML = `
-        <div class="song-item-left">
-            <button onclick="playSong('${song.id}', false)">
-            <ion-icon name="play"></ion-icon>
-            </button>
-            <img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
-            <div class="song-item-info">
-            <p class="song-title">${song.title}</p>
-            <p class="song-artist">${song.artist}</p>
-            </div>
-        </div>
-        <div class="song-item-right">
-            <button id="${downloadButtonId}" onclick="downloadSong('${song.id}')">
-            <ion-icon name="arrow-down-circle-outline"></ion-icon>
-            </button>
-            <button id="like-button-${start + index}" onclick="addToLikedSongs(${start + index})">
-            <ion-icon name="${likeIcon}" style="color: ${likeColor}"></ion-icon>
-            </button>
-        </div>
-        `;
-        songsContainer.appendChild(songItem);
-        updateDownloadButton(song.id);
-    });
-    }
-
-    function updateDownloadButton(songId) {
-    const downloadButton = document.getElementById(`download-button-${songId}`);
-    caches.open(CACHE_NAME).then(cache => {
-        cache.match(`https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/songs/${songId}.mp3`).then(response => {
-        if (response) {
-            downloadButton.innerHTML = '<ion-icon name="checkmark-circle-outline"></ion-icon>';
+      function setupPagination() {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+        const totalPages = Math.ceil(songs.length / 30);
+        for (let i = 1; i <= totalPages; i++) {
+          const pageButton = document.createElement('button');
+          pageButton.innerText = i;
+          pageButton.onclick = () => loadSongs(songs, i);
+          paginationContainer.appendChild(pageButton);
         }
-        });
-    });
-    }
+      }
 
-    function downloadSong(songId) {
-    const audioUrl = `https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/songs/${songId}.mp3`;
-    const imageUrl = `https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${songId}.jpeg`;
-
-    console.log(`Fetching audio from: ${audioUrl}`);
-    console.log(`Fetching image from: ${imageUrl}`);
-
-    Promise.all([
-        fetch(audioUrl),
-        fetch(imageUrl)
-    ]).then(responses => {
-        const [audioResponse, imageResponse] = responses;
-
-        const cachePromises = [];
-
-        if (audioResponse.ok) {
-        const audioCachePromise = caches.open(CACHE_NAME).then(cache => {
-            return cache.put(audioUrl, audioResponse.clone());
-        });
-        cachePromises.push(audioCachePromise);
-        } else {
-        console.error(`Failed to download audio: ${audioResponse.status}`);
-        }
-
-        if (imageResponse.ok) {
-        const imageCachePromise = caches.open(CACHE_NAME).then(cache => {
-            return cache.put(imageUrl, imageResponse.clone());
-        });
-        cachePromises.push(imageCachePromise);
-        } else {
-        console.error(`Failed to download image: ${imageResponse.status}`);
-        }
-
-        return Promise.all(cachePromises); 
-    }).then(() => {
-        updateDownloadButton(songId); 
-    }).catch(error => {
-        console.error('Error during downloading:', error);
-    });
-    }
-
-
-    function setupPagination() {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.innerHTML = '';
-
-    const totalPages = Math.ceil(songs.length / 30);
-    for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.innerText = i;
-        pageButton.onclick = () => loadSongs(songs, i);
-        paginationContainer.appendChild(pageButton);
-    }
-    }
-
-    function playSong(songId, fromLikedSongs = false) {
-    const song = fromLikedSongs ? likedSongs.find(song => song.id === songId) : songs.find(song => song.id === songId);
-    if (!song) return;
-
-    currentSongIndex = fromLikedSongs ? likedSongs.findIndex(s => s.id === song.id) : songs.findIndex(s => s.id === song.id);
-    isPlayingLikedSongs = fromLikedSongs;
-
-    audio.src = `https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/songs/${song.id}.mp3`;
-    songImage.src = `https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg`;
-    songTitle.innerText = song.title;
-    songArtist.innerText = song.artist;
-    playPauseButton.innerHTML = '<ion-icon name="pause"></ion-icon>';
-
-    updateMediaSession(song);
-
-    isPlaying = true;
-    audio.play();
-    }
-
-    function updateMediaSession(song) {
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-        title: song.title,
-        artist: song.artist,
-        album: '',
-        artwork: [
-            { src: songImage.src, sizes: '640x640', type: 'image/jpeg' },
-            { src: defaultImage, sizes: '128x128', type: 'image/jpeg' }
-        ]
-        });
-
-        navigator.mediaSession.setActionHandler('play', handlePlayPause);
-        navigator.mediaSession.setActionHandler('pause', handlePlayPause);
-        navigator.mediaSession.setActionHandler('previoustrack', playPrevSong);
-        navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
-    }
-    }
-
-    function handlePlayPause() {
-    if (isPlaying) {
-        audio.pause();
-        playPauseButton.innerHTML = '<ion-icon name="play"></ion-icon>';
-        isPlaying = false;
-    } else {
-        audio.play();
-        playPauseButton.innerHTML = '<ion-icon name="pause"></ion-icon>';
+      function playSong(songId, fromLikedSongs = false) {
+        const song = fromLikedSongs ? likedSongs.find(song => song.id === songId) : songs.find(song => song.id === songId);
+        if (!song) return;
+        currentSongIndex = fromLikedSongs ? likedSongs.findIndex(s => s.id === song.id) : songs.findIndex(s => s.id === song.id);
+        isPlayingLikedSongs = fromLikedSongs;
+        audio.src = `https:
+        songImage.src = `https:
+        songTitle.innerText = song.title;
+        songArtist.innerText = song.artist;
+        playPauseButton.innerHTML = ' < ion - icon name = "pause" > < /ion-icon>';
+        updateMediaSession(song);
         isPlaying = true;
-    }
-    }
+        audio.play();
+      }
 
-    function playNextSong() {
-    const currentIndex = isPlayingLikedSongs ? currentSongIndex : currentSongIndex;
-    const songList = isPlayingLikedSongs ? likedSongs : songs;
+      function updateMediaSession(song) {
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.title,
+            artist: song.artist,
+            album: '',
+            artwork: [{
+              src: songImage.src,
+              sizes: '640x640',
+              type: 'image/jpeg'
+            }, {
+              src: defaultImage,
+              sizes: '128x128',
+              type: 'image/jpeg'
+            }]
+          });
+          navigator.mediaSession.setActionHandler('play', handlePlayPause);
+          navigator.mediaSession.setActionHandler('pause', handlePlayPause);
+          navigator.mediaSession.setActionHandler('previoustrack', playPrevSong);
+          navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
+        }
+      }
 
-    if (currentIndex >= 0 && currentIndex < songList.length - 1) {
-        playSong(songList[currentIndex + 1].id, isPlayingLikedSongs);
-    }
-    }
+      function handlePlayPause() {
+        if (isPlaying) {
+          audio.pause();
+          playPauseButton.innerHTML = ' < ion - icon name = "play" > < /ion-icon>';
+          isPlaying = false;
+        } else {
+          audio.play();
+          playPauseButton.innerHTML = ' < ion - icon name = "pause" > < /ion-icon>';
+          isPlaying = true;
+        }
+      }
 
-    function playPrevSong() {
-    const currentIndex = isPlayingLikedSongs ? currentSongIndex : currentSongIndex;
-    const songList = isPlayingLikedSongs ? likedSongs : songs;
+      function playNextSong() {
+        const currentIndex = isPlayingLikedSongs ? currentSongIndex : currentSongIndex;
+        const songList = isPlayingLikedSongs ? likedSongs : songs;
+        if (currentIndex >= 0 && currentIndex < songList.length - 1) {
+          playSong(songList[currentIndex + 1].id, isPlayingLikedSongs);
+        }
+      }
 
-    if (currentIndex > 0) {
-        playSong(songList[currentIndex - 1].id, isPlayingLikedSongs);
-    }
-    }
+      function playPrevSong() {
+        const currentIndex = isPlayingLikedSongs ? currentSongIndex : currentSongIndex;
+        const songList = isPlayingLikedSongs ? likedSongs : songs;
+        if (currentIndex > 0) {
+          playSong(songList[currentIndex - 1].id, isPlayingLikedSongs);
+        }
+      }
 
-    function updateProgressBar() {
-    if (audio.duration) {
-        progress.value = (audio.currentTime / audio.duration) * 100;
-    }
+      function updateProgressBar() {
+        if (audio.duration) {
+          progress.value = (audio.currentTime / audio.duration) * 100;
+        }
+        if (audio.ended) {
+          playNextSong();
+        }
+      }
 
-    if (audio.ended) {
-        playNextSong();
-    }
-    }
+      function addToLikedSongs(index) {
+        likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+        const songToAdd = songs[index];
+        const alreadyLiked = likedSongs.some(song => song.id === songToAdd.id);
+        const likeButton = document.querySelector(`#like-button-${index}`);
+        if (!alreadyLiked) {
+          likedSongs.push(songToAdd);
+          localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
+          likeButton.innerHTML = ' < ion - icon name = "heart" > < /ion-icon>';
+          likeButton.style.color = '#ed8796';
+        } else {
+          const updatedLikedSongs = likedSongs.filter(song => song.id !== songToAdd.id);
+          localStorage.setItem('likedSongs', JSON.stringify(updatedLikedSongs));
+          likeButton.innerHTML = ' < ion - icon name = "heart-outline" > < /ion-icon>';
+          likeButton.style.color = 'var(--text)';
+        }
+      }
 
-    function addToLikedSongs(index) {
-    likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
-    const songToAdd = songs[index];
-    const alreadyLiked = likedSongs.some(song => song.id === songToAdd.id);
-    const likeButton = document.querySelector(`#like-button-${index}`);
-
-    if (!alreadyLiked) {
-        likedSongs.push(songToAdd);
-        localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
-        likeButton.innerHTML = '<ion-icon name="heart"></ion-icon>';
-        likeButton.style.color = '#ed8796';
-    } else {
-        const updatedLikedSongs = likedSongs.filter(song => song.id !== songToAdd.id);
-        localStorage.setItem('likedSongs', JSON.stringify(updatedLikedSongs));
-        likeButton.innerHTML = '<ion-icon name="heart-outline"></ion-icon>';
-        likeButton.style.color = 'var(--text)';
-    }
-    }
-
-    function loadLikedSongs() {
-    const likedSongsContainer = document.getElementById('liked-songs-container');
-    likedSongsContainer.innerHTML = '';
-
-    likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
-
-    likedSongs.forEach((song, index) => {
-        const songItem = document.createElement('div');
-        songItem.className = 'song-item';
-        songItem.id = song.id;
-
-        const downloadButtonId = `download-button-${song.id}`;
-
-        songItem.innerHTML = `
-        <div class="song-item-left">
-            <button onclick="playSong('${song.id}', true)">
-            <ion-icon name="play"></ion-icon>
-            </button>
-            <img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
-            <div class="song-item-info">
-            <p class="song-title">${song.title}</p>
-            <p class="song-artist">${song.artist}</p>
-            </div>
-        </div>
-        <div class="song-item-right">
-            <button id="${downloadButtonId}" onclick="downloadSong('${song.id}')">
-            <ion-icon name="arrow-down-circle-outline"></ion-icon>
-            </button>
-            <button onclick="removeFromLikedSongs(${index})">
-            <ion-icon name="heart"></ion-icon>
-            </button>
-        </div>
-        `;
-        likedSongsContainer.appendChild(songItem);
-        updateDownloadButton(song.id);
-    });
-    }
-
-    function removeFromLikedSongs(index) {
-    likedSongs.splice(index, 1);
-    localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
-    loadLikedSongs();
-    }
-
-    let uploadedSongs = JSON.parse(localStorage.getItem('uploadedSongs')) || [];
-
-    function loadUploadedSongs() {
-    const uploadedSongsContainer = document.getElementById('uploaded-songs');
-    uploadedSongsContainer.innerHTML = '';
-
-    uploadedSongs.forEach(song => {
-        const songItem = document.createElement('div');
-        songItem.className = 'song-item';
-        songItem.id = song.id;
-
-        songItem.innerHTML = `
-        <div class="song-item-left">
-            <button onclick="playUploadedSong('${song.id}')">
-            <ion-icon name="play"></ion-icon>
-            </button>
-            <img src="${song.imageUrl}" alt="${song.title}">
-            <div class="song-item-info">
-            <p class="song-title">${song.title}</p>
-            <p class="song-artist">${song.artist}</p>
-            </div>
-        </div>
-        <div class="song-item-right">
-            <button onclick="removeUploadedSong('${song.id}')">
-            <ion-icon name="close-outline"></ion-icon>
-            </button>
-        </div>
-        `;
-
-        uploadedSongsContainer.appendChild(songItem);
-    });
-    }
-
-    function playUploadedSong(songId) {
-    const song = uploadedSongs.find(song => song.id === songId);
-    if (!song) return;
-
-    audio.src = song.fileUrl;
-    songImage.src = song.imageUrl;
-    songTitle.innerText = song.title;
-    songArtist.innerText = song.artist;
-    playPauseButton.innerHTML = '<ion-icon name="pause"></ion-icon>';
-
-    isPlaying = true;
-    audio.play();
-    }
-
-    function removeUploadedSong(songId) {
-    uploadedSongs = uploadedSongs.filter(song => song.id !== songId);
-    localStorage.setItem('uploadedSongs', JSON.stringify(uploadedSongs));
-    loadUploadedSongs();
-    }
-
-
-    function loadOfflineSongs() {
-    const offlineSongsContainer = document.getElementById('offline-songs-container');
-    offlineSongsContainer.innerHTML = '';
-
-    caches.open(CACHE_NAME).then(cache => {
-        console.log('Cache opened:', cache);
-
-        cache.keys().then(cachedRequests => {
-        console.log('Cached requests:', cachedRequests);
-
-        cachedRequests.forEach(request => {
-            const songId = request.url.split('/').pop().replace('.mp3', '');
-            console.log('Song ID from request:', songId);
-
-            const song = songs.find(s => s.id === songId);
-            console.log('Found song:', song);
-
-            if (song) {
+      function loadLikedSongs() {
+        const likedSongsContainer = document.getElementById('liked-songs-container');
+        if (likedSongsContainer) {
+          likedSongsContainer.innerHTML = '';
+          likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+          likedSongs.forEach((song, index) => {
             const songItem = document.createElement('div');
             songItem.className = 'song-item';
             songItem.id = song.id;
-
+            const downloadButtonId = `download-button-${song.id}`;
             songItem.innerHTML = `
-                    <div class="song-item-left">
-                    <button onclick="playSong('${song.id}', false)">
-                        <ion-icon name="play"></ion-icon>
-                    </button>
-                    <img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
-                    <div class="song-item-info">
-                        <p class="song-title">${song.title}</p>
-                        <p class="song-artist">${song.artist}</p>
-                    </div>
-                    </div>
-                `;
 
-            offlineSongsContainer.appendChild(songItem);
-            console.log('Appended song item to offline container:', songItem);
-            } else {
-            console.log('No song found for ID:', songId);
-            }
-        });
-        }).catch(error => {
-        console.error('Error fetching cached requests:', error);
-        });
-    }).catch(error => {
-        console.error('Error opening cache:', error);
-    });
-    }
-
-    fetchSongs();
-
-    audio.addEventListener('timeupdate', updateProgressBar);
-    progress.addEventListener('input', () => {
-    const progressValue = progress.value;
-    const duration = audio.duration || 0;
-    audio.currentTime = (progressValue / 100) * duration;
-    });
-    playPauseButton.addEventListener('click', handlePlayPause);
-    document.getElementById('next-song').addEventListener('click', playNextSong);
-    document.getElementById('prev-song').addEventListener('click', playPrevSong);
-
-    document.getElementById('upload-song-button').addEventListener('click', () => {
-    const songFileInput = document.createElement('input');
-    songFileInput.type = 'file';
-    songFileInput.accept = '.mp3';
-    
-    songFileInput.click();
-
-    songFileInput.onchange = function () {
-        const songFile = songFileInput.files[0];
-
-        if (!songFile) {
-        alert('Please select an MP3 file.');
-        return;
+												<div class="song-item-left">
+													<button onclick="playSong('${song.id}', true)">
+														<ion-icon name="play"></ion-icon>
+													</button>
+													<img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
+														<div class="song-item-info">
+															<p class="song-title">${song.title}</p>
+															<p class="song-artist">${song.artist}</p>
+														</div>
+													</div>
+													<div class="song-item-right">
+														<button id="${downloadButtonId}" onclick="downloadSong('${song.id}')">
+															<ion-icon name="arrow-down-circle-outline"></ion-icon>
+														</button>
+														<button onclick="removeFromLikedSongs(${index})">
+															<ion-icon name="heart"></ion-icon>
+														</button>
+													</div>
+            `;
+            likedSongsContainer.appendChild(songItem);
+            updateDownloadButton(song.id);
+          });
         }
+      }
 
-        var songTitle = prompt('Enter the song title:');
-        var songArtist = prompt('Enter the artist name:');
-        var songImage = prompt('Enter the image URL (optional):', defaultImage);
+      function removeFromLikedSongs(index) {
+        likedSongs.splice(index, 1);
+        localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
+        loadLikedSongs();
+      }
+      let uploadedSongs = JSON.parse(localStorage.getItem('uploadedSongs')) || [];
 
-        if (!songTitle || !songArtist) {
-        alert('Please provide the song title and artist.');
-        return;
+      function loadUploadedSongs() {
+        const uploadedSongsContainer = document.getElementById('uploaded-songs');
+        if (uploadedSongsContainer) {
+          uploadedSongsContainer.innerHTML = '';
+          uploadedSongs.forEach(song => {
+            const songItem = document.createElement('div');
+            songItem.className = 'song-item';
+            songItem.id = song.id;
+            songItem.innerHTML = `
+
+													<div class="song-item-left">
+														<button onclick="playUploadedSong('${song.id}')">
+															<ion-icon name="play"></ion-icon>
+														</button>
+														<img src="${song.imageUrl}" alt="${song.title}">
+															<div class="song-item-info">
+																<p class="song-title">${song.title}</p>
+																<p class="song-artist">${song.artist}</p>
+															</div>
+														</div>
+														<div class="song-item-right">
+															<button onclick="removeUploadedSong('${song.id}')">
+																<ion-icon name="close-outline"></ion-icon>
+															</button>
+														</div>
+            `;
+            uploadedSongsContainer.appendChild(songItem);
+          });
         }
+      }
 
-        const songId = `uploaded_${Date.now()}`;
-        const songUrl = URL.createObjectURL(songFile);
+      function playUploadedSong(songId) {
+        const song = uploadedSongs.find(song => song.id === songId);
+        if (!song) return;
+        audio.src = song.fileUrl;
+        songImage.src = song.imageUrl;
+        songTitle.innerText = song.title;
+        songArtist.innerText = song.artist;
+        playPauseButton.innerHTML = ' < ion - icon name = "pause" > < /ion-icon>';
+        isPlaying = true;
+        audio.play();
+      }
 
-        const newSong = {
-        id: songId,
-        title: songTitle,
-        artist: songArtist,
-        imageUrl: songImage || defaultImage,
-        fileUrl: songUrl
-        };
-        uploadedSongs.push(newSong);
-
+      function removeUploadedSong(songId) {
+        uploadedSongs = uploadedSongs.filter(song => song.id !== songId);
         localStorage.setItem('uploadedSongs', JSON.stringify(uploadedSongs));
-
         loadUploadedSongs();
-    };
-    });
+      }
 
-    if (window.location.pathname.endsWith('upload.html')) {
-    loadUploadedSongs();
-    }
-  </script>
-</body>
+      function loadOfflineSongs() {
+        const offlineSongsContainer = document.getElementById('offline-songs-container');
+        if (offlineSongsContainer) {
+          offlineSongsContainer.innerHTML = '';
+          caches.open(CACHE_NAME).then(cache => {
+            console.log('Cache opened:', cache);
+            cache.keys().then(cachedRequests => {
+              console.log('Cached requests:', cachedRequests);
+              cachedRequests.forEach(request => {
+                const songId = request.url.split('/').pop().replace('.mp3', '');
+                console.log('Song ID from request:', songId);
+                const song = songs.find(s => s.id === songId);
+                console.log('Found song:', song);
+                if (song) {
+                  const songItem = document.createElement('div');
+                  songItem.className = 'song-item';
+                  songItem.id = song.id;
+                  songItem.innerHTML = `
 
+														<div class="song-item-left">
+															<button onclick="playSong('${song.id}', false)">
+																<ion-icon name="play"></ion-icon>
+															</button>
+															<img src="https://raw.githubusercontent.com/smartfoloo/coconut/refs/heads/main/public/assets/images/${song.id}.jpeg" alt="${song.title}">
+																<div class="song-item-info">
+																	<p class="song-title">${song.title}</p>
+																	<p class="song-artist">${song.artist}</p>
+																</div>
+															</div>
+                    `;
+                  offlineSongsContainer.appendChild(songItem);
+                  console.log('Appended song item to offline container:', songItem);
+                } else {
+                  console.log('No song found for ID:', songId);
+                }
+              });
+            }).catch(error => {
+              console.error('Error fetching cached requests:', error);
+            });
+          }).catch(error => {
+            console.error('Error opening cache:', error);
+          });
+        }
+      }
+
+      const searchBar = document.getElementById('search-bar');
+      searchBar.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        if (searchTerm.length > 0) {
+          const filteredSongs = songs.filter(song => song.title.toLowerCase().includes(searchTerm) || song.artist.toLowerCase().includes(searchTerm));
+          loadSongs(filteredSongs);
+        } else {
+          loadSongs();
+        }
+      });
+
+      loadSongs();
+      setupPagination();
+      loadLikedSongs();
+      loadOfflineSongs();
+      audio.addEventListener('timeupdate', updateProgressBar);
+      progress.addEventListener('input', () => {
+        const progressValue = progress.value;
+        const duration = audio.duration || 0;
+        audio.currentTime = (progressValue / 100) * duration;
+      });
+      playPauseButton.addEventListener('click', handlePlayPause);
+      document.getElementById('next-song').addEventListener('click', playNextSong);
+      document.getElementById('prev-song').addEventListener('click', playPrevSong);
+
+      likeButton.addEventListener('click', () => {
+        if (currentSongIndex >= 0) {
+          const currentSong = songs[currentSongIndex];
+          const songIndex = songs.findIndex(song => song.id === currentSong.id);
+          if (songIndex !== -1) {
+            addToLikedSongs(songIndex);
+          }
+        }
+      });
+      const uploadSongButton = document.getElementById('upload-song-button');
+      if (uploadSongButton) {
+        uploadSongButton.addEventListener('click', () => {
+          const songFileInput = document.createElement('input');
+          songFileInput.type = 'file';
+          songFileInput.accept = '.mp3';
+          songFileInput.click();
+          songFileInput.onchange = function() {
+            const songFile = songFileInput.files[0];
+            if (!songFile) {
+              alert('Please select an MP3 file.');
+              return;
+            }
+            var songTitle = prompt('Enter the song title:');
+            var songArtist = prompt('Enter the artist name:');
+            var songImage = prompt('Enter the image URL (optional):', defaultImage);
+            if (!songTitle || !songArtist) {
+              alert('Please provide the song title and artist.');
+              return;
+            }
+            const songId = `uploaded_${Date.now()}`;
+            const songUrl = URL.createObjectURL(songFile);
+            const newSong = {
+              id: songId,
+              title: songTitle,
+              artist: songArtist,
+              imageUrl: songImage || defaultImage,
+              fileUrl: songUrl
+            };
+            uploadedSongs.push(newSong);
+            localStorage.setItem('uploadedSongs', JSON.stringify(uploadedSongs));
+            loadUploadedSongs();
+          };
+        });
+      }
+      if (window.location.pathname.endsWith('upload.html')) {
+        loadUploadedSongs();
+      }
+    </script>
+  </body>
 </html>
